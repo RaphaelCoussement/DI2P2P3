@@ -16,6 +16,9 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
+builder.Services.AddScoped<IPasswordRepository, PasswordRepository>();
+builder.Services.AddScoped<IPasswordService, PasswordService>();
+
 // Configure CORS to allow all origins
 builder.Services.AddCors(options =>
 {
@@ -33,7 +36,7 @@ var app = builder.Build();
 app.UseCors();
 
 // Use middleware for API key validation
-app.UseMiddleware<ApiKeyMiddleware>(builder.Configuration);
+//app.UseMiddleware<ApiKeyMiddleware>(builder.Configuration);
 
 app.UseRouting();
 
