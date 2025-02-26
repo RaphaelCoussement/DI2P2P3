@@ -27,6 +27,15 @@ public class ApplicationRepository : IApplicationRepository
     
     public async Task DeleteApplicationAsync(int id)
     {
+        var passwords = await _context.Passwords
+            .Where(p => p.ApplicationId == id)
+            .ToListAsync();
+    
+        if (passwords.Any())
+        {
+            _context.Passwords.RemoveRange(passwords);
+        }
+        
         var app = await _context.Applications.FindAsync(id);
         if (app != null)
         {
