@@ -1,0 +1,69 @@
+<div class="min-vh-100 bg-light">
+    <!-- Header -->
+    <div class="py-4 px-5 d-flex justify-content-between align-items-center bg-white border-bottom">
+      <h2 class="h3 text-dark">Applications</h2>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addApplicationModal">
+        Ajouter une application
+      </button>
+    </div>
+  
+    <!-- Application Cards -->
+    <div class="container py-5">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        <!-- Liste des applications -->
+        <div *ngFor="let app of applications" class="col" (click)="viewApplicationDetail(app.id)">
+          <div class="card shadow-sm border-0">
+            <!-- Header -->
+            <div class="card-header bg-gradient text-black">
+              <h5 class="mb-0">{{ app.name }}</h5>
+            </div>
+  
+            <!-- Content -->
+            <div class="card-body">
+              <p class="fw-semibold mb-2">Type d'Application:</p>
+              <p class="text-muted p-2 rounded bg-light">
+                {{ app.type === applicationType.GrandPublic ? 'Grand Public' : 'Professionnelle' }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Modal d'ajout -->
+<div class="modal fade" id="addApplicationModal" tabindex="-1" aria-labelledby="addApplicationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <!-- Header du modal -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="addApplicationModalLabel">Ajouter une application</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Corps du modal (formulaire) -->
+      <div class="modal-body">
+        <form [formGroup]="newApplicationForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <label for="appName" class="form-label">Nom de l'application</label>
+              <input type="text" class="form-control" id="appName" formControlName="name" required>
+            </div>
+          
+            <div class="mb-3">
+              <label for="appType" class="form-label">Type d'application</label>
+              <select class="form-select" id="appType" formControlName="type" required>
+                <option [value]="applicationType.GrandPublic">Grand Public</option>
+                <option [value]="applicationType.Professionnelle">Professionnelle</option>
+              </select>
+            </div>
+          
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+              <button type="submit" class="btn btn-primary">Ajouter</button>
+            </div>
+          </form>
+          
+      </div>
+    </div>
+  </div>
+</div>
