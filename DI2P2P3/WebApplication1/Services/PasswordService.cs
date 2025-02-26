@@ -47,5 +47,15 @@ public class PasswordService : IPasswordService
 
         return passwordDtos;
     }
+    
+    public async Task<Password> GetPasswordByIdAsync(int id)
+    {
+        return await _passwordRepository.GetPasswordByIdAsync(id);
+    }
+
+    public async Task DeletePasswordAsync(int id)
+    {
+        await _passwordRepository.DeletePasswordAsync(id);
+    }
 
 }

@@ -7,4 +7,6 @@ public interface IApplicationRepository
     Task<List<Application>> GetApplicationsAsync();
     Task<Application?> GetApplicationByIdAsync(int id);
     Task AddApplicationAsync(Application application);
+    Task DeleteApplicationAsync(int id);
+    
 }

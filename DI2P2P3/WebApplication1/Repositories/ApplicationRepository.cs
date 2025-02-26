@@ -24,4 +24,14 @@ public class ApplicationRepository : IApplicationRepository
         _context.Applications.Add(application);
         await _context.SaveChangesAsync();
     }
+    
+    public async Task DeleteApplicationAsync(int id)
+    {
+        var app = await _context.Applications.FindAsync(id);
+        if (app != null)
+        {
+            _context.Applications.Remove(app);
+            await _context.SaveChangesAsync();
+        }
+    }
 }

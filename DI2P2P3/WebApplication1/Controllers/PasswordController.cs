@@ -54,4 +54,36 @@ public class PasswordController : ControllerBase
 
         return Ok(passwords);
     }
+    
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetPasswordById(int id)
+    {
+        // Récupérer le mot de passe en fonction de l'ID
+        Password password = await _passwordService.GetPasswordByIdAsync(id);
+
+        if (password == null)
+        {
+            return NotFound($"Mot de passe avec l'ID {id} non trouvé.");
+        }
+
+        return Ok(password);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeletePassword(int id)
+    {
+        // Vérifier si le mot de passe existe
+        Password password = await _passwordService.GetPasswordByIdAsync(id);
+
+        if (password == null)
+        {
+            return NotFound($"Mot de passe avec l'ID {id} non trouvé.");
+        }
+
+        // Supprimer le mot de passe
+        await _passwordService.DeletePasswordAsync(id);
+
+        return NoContent();  // Retourne un code 204 (Pas de contenu) après suppression
+    }
+
 }

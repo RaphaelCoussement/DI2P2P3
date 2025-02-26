@@ -23,5 +23,21 @@ namespace WebApplication1.Repositories
         {
             return await _context.Passwords.Include(p => p.Application).ToListAsync();  
         }
+        
+        public async Task<Password> GetPasswordByIdAsync(int id)
+        {
+            return await _context.Passwords.Include(p => p.Application)
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public async Task DeletePasswordAsync(int id)
+        {
+            var password = await _context.Passwords.FindAsync(id);
+            if (password != null)
+            {
+                _context.Passwords.Remove(password);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }
