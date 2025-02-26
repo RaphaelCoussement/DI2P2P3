@@ -16,21 +16,37 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
+// Configure CORS to allow all origins
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyMethod() 
+            .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
+// Enable CORS before routing
+app.UseCors();
+
+// Use middleware for API key validation
 app.UseMiddleware<ApiKeyMiddleware>(builder.Configuration);
 
 app.UseRouting();
 
+// HTTPS redirection, authorization, and other middlewares
 app.UseHttpsRedirection();
 app.UseAuthorization();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
 
 app.MapStaticAssets();
 
