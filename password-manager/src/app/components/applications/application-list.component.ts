@@ -70,7 +70,7 @@ export class ApplicationListComponent implements OnInit {
         const modalInstance = Modal.getInstance(modalElement) || new Modal(modalElement);
         modalInstance.hide();
       }
-      
+      window.location.reload();
       },
       error: (error) => {
         this.errorMessage = 'Erreur lors de l\'ajout de l\'application.';
@@ -78,6 +78,10 @@ export class ApplicationListComponent implements OnInit {
         this.isAddingApplication = false;
       }
     });
+  }
+
+  viewApplicationDetail(id: number): void {
+    this.router.navigate([`/applications/${id}`]);
   }
   
 }

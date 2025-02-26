@@ -1,0 +1,9 @@
+<div *ngIf="application">
+    <h3>{{ application.name }}</h3>
+    <p><strong>Type:</strong> {{ application.type === applicationType.GrandPublic ? 'Grand Public' : 'Professionnelle' }}</p>
+  </div>
+  
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+  

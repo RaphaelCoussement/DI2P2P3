@@ -2,34 +2,42 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { PasswordService } from '../../password.service';
 import { Password } from '../../models/password';
+import { ApplicationService } from '../../application.service';
+import { Application } from '../../models/application';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Modal } from 'bootstrap';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-password-list',
   templateUrl: './password-list.component.html',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   styleUrls: ['./password-list.component.css']
 })
 export class PasswordListComponent implements OnInit {
 
   passwords: Password[] = [];
+  applications: Application[] = [];
   newPasswordForm: FormGroup;
-  isAddingPassword = false;
   errorMessage: string | null = null;
 
   constructor(
+    private router: Router,
     private passwordService: PasswordService,
+    private applicationService: ApplicationService,
     private fb: FormBuilder
   ) {
     // Initialisation du formulaire pour ajouter un nouveau mot de passe
     this.newPasswordForm = this.fb.group({
-      applicationId: ['', Validators.required],  // ID de l'application
-      encryptedPassword: ['', [Validators.required, Validators.minLength(6)]],  // Exemple de validation pour le mot de passe
+      applicationId: ['', Validators.required],  // Application sélectionnée
+      encryptedPassword: ['', [Validators.required, Validators.minLength(6)]]  // Mot de passe
     });
   }
 
   ngOnInit(): void {
     this.loadPasswords();
+    this.loadApplications();
   }
 
   // Charger les mots de passe depuis le service
@@ -45,28 +53,43 @@ export class PasswordListComponent implements OnInit {
     );
   }
 
-  // Ajouter un nouveau mot de passe
-  addPassword(): void {
-    if (this.newPasswordForm.valid) {
-      const newPassword: Password = this.newPasswordForm.value;
-      this.passwordService.addPassword(newPassword).subscribe(
-        (response) => {
-          this.passwords.push(response);  // Ajouter le mot de passe à la liste
-          this.isAddingPassword = false;  // Cacher le formulaire d'ajout
-          this.newPasswordForm.reset();  // Réinitialiser le formulaire
-        },
-        (error) => {
-          this.errorMessage = 'Erreur lors de l\'ajout du mot de passe.';
-          console.error(error);
-        }
-      );
-    } else {
-      this.errorMessage = 'Le mot de passe est requis et doit comporter au moins 6 caractères.';
-    }
+  // Charger les applications pour le select
+  loadApplications(): void {
+    this.applicationService.getApps().subscribe(
+      (applications) => {
+        this.applications = applications;
+      },
+      (error) => {
+        this.errorMessage = 'Erreur lors du chargement des applications.';
+        console.error(error);
+      }
+    );
   }
 
-  // Afficher le formulaire d'ajout de mot de passe
-  toggleAddPasswordForm(): void {
-    this.isAddingPassword = !this.isAddingPassword;
+  // Soumettre le formulaire d'ajout de mot de passe
+  onSubmit(): void {
+    if (this.newPasswordForm.invalid) return;
+
+    const newPassword = this.newPasswordForm.value;
+
+    this.passwordService.addPassword(newPassword).subscribe({
+      next: (password) => {
+        this.passwords.push(password);
+        this.newPasswordForm.reset();
+        const modalElement = document.getElementById('addPasswordModal');
+        if (modalElement) {
+          const modalInstance = Modal.getInstance(modalElement) || new Modal(modalElement);
+          modalInstance.hide();  // Fermer la modal après soumission
+        }
+        window.location.reload();
+      },
+      error: (error) => {
+        this.errorMessage = 'Erreur lors de l\'ajout du mot de passe.';
+        console.error(error);
+      }
+    });
+  }
+  viewPasswordDetail(passwordId: number): void {
+    this.router.navigate([`/passwords/${passwordId}`]);  // Redirection vers le détail du mot de passe
   }
 }

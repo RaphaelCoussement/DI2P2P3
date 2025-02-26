@@ -11,7 +11,7 @@
     <div class="container py-5">
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         <!-- Liste des applications -->
-        <div *ngFor="let app of applications" class="col">
+        <div *ngFor="let app of applications" class="col" (click)="viewApplicationDetail(app.id)">
           <div class="card shadow-sm border-0">
             <!-- Header -->
             <div class="card-header bg-gradient text-black">
