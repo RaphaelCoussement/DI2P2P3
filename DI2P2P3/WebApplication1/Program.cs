@@ -36,7 +36,7 @@ var app = builder.Build();
 app.UseCors();
 
 // Use middleware for API key validation
-//app.UseMiddleware<ApiKeyMiddleware>(builder.Configuration);
+//app.UseMiddleware<ApiKeyMiddleware>();
 
 app.UseRouting();
 
