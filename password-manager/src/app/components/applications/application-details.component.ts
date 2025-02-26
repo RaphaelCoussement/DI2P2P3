@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ApplicationService } from '../../application.service';
 import { Application, ApplicationType } from '../../models/application';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-application-detail',
@@ -15,6 +16,7 @@ export class ApplicationDetailsComponent implements OnInit {
   applicationType = ApplicationType;    
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
     private applicationService: ApplicationService
   ) {}
@@ -34,5 +36,20 @@ export class ApplicationDetailsComponent implements OnInit {
         console.error(error);
       }
     );
+  }
+  deleteApplication(): void {
+    const application = this.application;
+    if (!application) return;
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette application ?')) {
+      this.applicationService.deleteApp(application.id).subscribe(
+        () => {
+          this.router.navigate(['/applications']);
+        },
+        (error) => {
+          this.errorMessage = 'Erreur lors de la suppression de l\'application.';
+          console.error(error);
+        }
+      );
+    }
   }
 }

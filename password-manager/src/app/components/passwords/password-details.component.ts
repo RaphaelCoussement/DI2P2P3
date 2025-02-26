@@ -4,6 +4,7 @@ import { PasswordService } from '../../password.service';
 import { Password } from '../../models/password';
 import { PasswordDetails } from '../../models/passwordDetails';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-password-detail',
@@ -16,6 +17,7 @@ export class PasswordDetailComponent implements OnInit {
   errorMessage: string | null = null;
 
   constructor(
+    private router: Router,
     private passwordService: PasswordService,
     private route: ActivatedRoute  // ActivatedRoute pour obtenir l'ID de l'URL
   ) {}
@@ -37,5 +39,21 @@ export class PasswordDetailComponent implements OnInit {
         console.error(error);
       }
     );
+  }
+
+  deletePassword(): void {
+    const password = this.password;
+    if (!password) return;
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce mot de passe ?')) {
+      this.passwordService.deletePassword(password.id).subscribe(
+        () => {
+          this.router.navigate(['/passwords']);
+        },
+        (error) => {
+          this.errorMessage = 'Erreur lors de la suppression du mot de passe.';
+          console.error(error);
+        }
+      );
+    }
   }
 }
